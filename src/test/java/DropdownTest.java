@@ -6,6 +6,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import java.time.Duration;
 import java.util.List;
@@ -13,28 +14,28 @@ import java.util.List;
 public class DropdownTest {
 
     @Test
-    public void dropdownTest() {
+    public void verifyDropdown() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
         options.addArguments("--incognito");
         options.addArguments("--disable-notification");
 
         WebDriver driver = new ChromeDriver(options);
-
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.get("https://the-internet.herokuapp.com/dropdown");
 
         Select select = new Select(driver.findElement(By.id("dropdown")));
+        SoftAssert softAssert = new SoftAssert();
 
         List<WebElement> optionsSelect = select.getOptions();
         Assert.assertTrue(optionsSelect.size() > 0, "Опции в dropdown отсутствуют");
-
         String firstOptionValue = optionsSelect.get(1).getText();
         select.selectByIndex(1); // Выбираем первый элемент
         Assert.assertEquals(firstOptionValue, select.getFirstSelectedOption().getText());
-
         String secondOptionValue = optionsSelect.get(2).getText();
         select.selectByIndex(2); // Выбираем первый элемент
         Assert.assertEquals(secondOptionValue, select.getFirstSelectedOption().getText());
+        driver.quit();
+        softAssert.assertAll();
     }
 }
